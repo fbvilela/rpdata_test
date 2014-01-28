@@ -1,0 +1,10 @@
+<div class="row" style="margin-bottom: 20px">
+  <div class="col-md-4"><%= image_tag market_comparison.photo, width: '100%' %></div>
+  <div class="col-md-8">
+  	<b><%= market_comparison.address %></b> <br/>
+  	<%= market_comparison.attributes %> <br/>
+  	Sold for: <%= pretty_price market_comparison.price %> in <%= pretty_date market_comparison.sale_date %> <br/>
+  	<%= market_comparison.sale_method %> <br/>
+
+  </div>
+</div>

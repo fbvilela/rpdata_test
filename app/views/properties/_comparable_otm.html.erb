@@ -1,0 +1,11 @@
+<div class="row" style="margin-bottom: 20px">
+  <div class="col-md-4"><%= image_tag comparable_otm.photo, width: '100%' %></div>
+  <div class="col-md-8">
+  	<%= comparable_otm.address %> <br/>
+  	<%= pretty_price comparable_otm.price %> <br/>
+  	<%= comparable_otm.attributes %> <br/>
+  	Listed since: <%= pretty_date comparable_otm.listed_date %> <br/>
+  	Agency: <%= comparable_otm.agency %> <br/>
+  	Agent: <%= comparable_otm.agent %> 
+  </div>
+</div>

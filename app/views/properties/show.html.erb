@@ -1,0 +1,89 @@
+
+
+<div class="row">
+  <div class="col-md-2">
+    <%= image_tag @property_details.photo %> 
+  </div>
+  <div class="col-md-4">
+    <b><%= @property_details.address %></b>
+    <br/>
+    Bed: <%= @property_details.bedrooms %> <br/>
+    Bath: <%= @property_details.bathrooms %> <br/>
+    Car spaces: <%= @property_details.car_spaces %><br/> 
+    Year built: <%= @property_details.year_built %> <br/>
+    Land area: <%= @property_details.land_area %> 
+  </div>
+
+  <div class="col-md-6">
+    <%= form_tag('/properties/show', method: 'get', class: 'form-inline', role: 'form') do %> 
+      <input type="text" name="address" class="form-control" placeholder="Try a different address" style="width: 80%">
+      <button type="submit" class="btn btn-default">Submit</button>
+    <% end %> 
+  </div>
+</div>
+
+<h3>Sale History</h3>
+<table class="table table-striped" >
+ <tr> <th>Sale Date</th> <th>Sale type</th> <th>Price</th> <th>Purchaser</th> <th>Vendor</th> <th>Settlement Date</th> </tr>
+ <% @property_history.sale_history.each do |sale_history| %>
+ 	<tr>
+ 		<td><%= pretty_date sale_history.sale_date%></td>
+ 		<td><%= sale_history.sale_type%></td>
+ 		<td><%= pretty_price sale_history.sale_price%></td>
+ 		<td><%= sale_history.purchaser%></td>
+ 		<td><%= sale_history.vendor%></td>
+ 		<td><%= pretty_date sale_history.settlement_date%></td>
+ 	</tr>
+ <% end %> 
+</table>
+
+<h3>Market History (as sale)</h3>
+<table class="table table-striped">
+  <tr> <th>Listed date</th> <th>Listed type</th> <th>Listed price</th> <th>Agency</th> <th>Agent</th> <th>Days listed</th> </tr>
+  <% @property_history.otm_sale_history.each do |otm_sale_history| %>
+    <tr>
+      <td><%= pretty_date otm_sale_history.listed_date %></td>
+      <td><%= otm_sale_history.listed_sale_type %></td>
+      <td><%= pretty_price otm_sale_history.listed_sale_price %></td>
+      <td><%= otm_sale_history.agency %></td>
+      <td><%= otm_sale_history.agent %></td>
+      <td><%= otm_sale_history.days_listed %></td>
+    </tr>
+  <% end %> 
+</table>
+
+<h3>Market History (as rental)</h3>
+<table class="table table-striped">
+<tr> <th>Listed date</th> <th>Listed price</th> <th>Agency</th> <th>Agent</th> <th>Days listed</th> </tr>
+  <% @property_history.otm_rental_history.each do |otm_rental_history| %>
+    <tr>
+      <td><%= pretty_date otm_rental_history.listed_date %></td>
+      <td><%= pretty_price otm_rental_history.listed_price %></td>
+      <td><%= otm_rental_history.agency %></td>
+      <td><%= otm_rental_history.agent %></td>
+      <td><%= otm_rental_history.days_listed %></td>
+    </tr>
+  <% end %> 
+</table>
+
+<div class="row">
+  <div class="col-md-6" style="text-align: center">
+    <h3>Currently On The Market</h3>&nbsp;Total: <%= @comparable_otms.count %>
+    Avg $: <%= pretty_price @comparable_otms_avg_price %>
+    Avg DOM: <%= @comparable_otms_avg_dom %>
+  </div>
+  <div class="col-md-6" style="text-align: center">
+    <h3>Comparable Sales</h3>
+    Total: <%= @market_comparisons.count %> 
+    Avg Price: <%= pretty_price @market_comparisons_avg_price %>  
+  </div>
+</div>
+<div class="row" >
+  <div class="col-md-6" style="height: 430px; overflow: auto">
+    <%= render partial: "comparable_otm", collection: @comparable_otms %> 
+  </div>
+  <div class="col-md-6" style="height: 430px; overflow: auto">
+    <%= render partial: "market_comparison", collection: @market_comparisons %> 
+  </div>
+</div>
+
