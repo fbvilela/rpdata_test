@@ -15,11 +15,8 @@
   </div>
 
   <div class="col-md-6">
-    <%= form_tag('/properties/show', method: 'get', class: 'form-inline', role: 'form') do %> 
+    <%= form_tag('/properties/show/valuers', method: 'get', class: 'form-inline', role: 'form') do %> 
       <input type="text" name="address" class="form-control" placeholder="Try a different address" style="width: 80%">
-      <% if @valuers %>
-        <input type="hidden" name='valuers' value="true">
-      <% end %>
       <button type="submit" class="btn btn-default">Submit</button>
     <% end %> 
   </div>
@@ -28,46 +25,48 @@
 <h3>Sale History</h3>
 <table class="table table-striped" >
  <tr> <th>Sale Date</th> <th>Sale type</th> <th>Price</th> <th>Purchaser</th> <th>Vendor</th> <th>Settlement Date</th> </tr>
- <% @property_history.sale_history.each do |sale_history| %>
+ <% @history_details.sale_history.each do |sale_history| %>
  	<tr>
- 		<td><%= pretty_date sale_history.sale_date%></td>
- 		<td><%= sale_history.sale_type%></td>
- 		<td><%= pretty_price sale_history.sale_price%></td>
- 		<td><%= sale_history.purchaser%></td>
- 		<td><%= sale_history.vendor%></td>
- 		<td><%= pretty_date sale_history.settlement_date%></td>
+ 		<td><%= pretty_date sale_history[:transfer_date]%></td>
+ 		<td><%= sale_history[:transfer_type]%></td>
+ 		<td><%= pretty_price sale_history[:transfer_price]%></td>
+ 		<td>Not given</td>
+ 		<td><%= sale_history[:vendors][:first_name] rescue "" %> <%= sale_history[:vendors][:last_name] rescue ""%></td>
+ 		<td><%= pretty_date sale_history[:settlement_date]%></td>
  	</tr>
  <% end %> 
 </table>
 
 <h3>Market History (as sale)</h3>
 <table class="table table-striped">
-  <tr> <th>Listed date</th> <th>Listed type</th> <th>Listed price</th> <th>Agency</th> <th>Agent</th> <th>Days listed</th> </tr>
-  <% @property_history.otm_sale_history.each do |otm_sale_history| %>
+  <tr> <th>Listed date</th> <th>Listed type</th> <th>Listed price description</th> <th>Agency</th> <th>Agent</th> <th>Days listed</th> </tr>
+  <% @history_details.market_sale_history.each do |otm_sale_history| %>
     <tr>
-      <td><%= pretty_date otm_sale_history.listed_date %></td>
-      <td><%= otm_sale_history.listed_sale_type %></td>
-      <td><%= pretty_price otm_sale_history.listed_sale_price %></td>
-      <td><%= otm_sale_history.agency %></td>
-      <td><%= otm_sale_history.agent %></td>
-      <td><%= otm_sale_history.days_listed %></td>
+      <td><%= pretty_date otm_sale_history[:latest_list_date] %></td>
+      <td><%= otm_sale_history[:listing_type_description] %></td>
+      <td><%= otm_sale_history[:latest_listed_price_description] %></td>
+      <td><%= otm_sale_history[:agency_name] %></td>
+      <td><%= otm_sale_history[:agent_name] %></td>
+      <td><%= otm_sale_history[:days_listed] %></td>
     </tr>
   <% end %> 
 </table>
 
+<% if @history_details.market_rental_history %>
 <h3>Market History (as rental)</h3>
 <table class="table table-striped">
 <tr> <th>Listed date</th> <th>Listed price</th> <th>Agency</th> <th>Agent</th> <th>Days listed</th> </tr>
-  <% @property_history.otm_rental_history.each do |otm_rental_history| %>
+  <% @history_details.market_rental_history.each do |otm_rental_history| %>
     <tr>
-      <td><%= pretty_date otm_rental_history.listed_date %></td>
-      <td><%= pretty_price otm_rental_history.listed_price %></td>
-      <td><%= otm_rental_history.agency %></td>
-      <td><%= otm_rental_history.agent %></td>
-      <td><%= otm_rental_history.days_listed %></td>
+      <td><%= pretty_date otm_rental_history[:latest_list_date] %></td>
+      <td><%= otm_rental_history[:rental_amount] %></td>
+      <td><%= otm_rental_history[:agency_name] %></td>
+      <td><%= otm_rental_history[:agent_name] %></td>
+      <td><%= otm_rental_history[:days_listed] %></td>
     </tr>
   <% end %> 
 </table>
+<% end %>
 
 <div class="row">
   <div class="col-md-6" style="text-align: center">

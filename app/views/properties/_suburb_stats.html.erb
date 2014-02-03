@@ -1,0 +1,22 @@
+<table class="table table-striped">
+
+  <tr>
+    <th>Sold in the last 12 months</th>
+    <th>Median sale price</th>
+    <th>Median price change (12months)</th>
+    <th>Median asking rent</th>
+    <th>Advertised in the last 12 months</th>
+    <th>Average days on market</th>
+  </tr>
+
+  <tr>
+    <td><%= @suburb_stats.number_sold_12_mths%> </td>
+    <td><%= pretty_price @suburb_stats.median_sale_price%></td>
+    <td><%= pretty_price @suburb_stats.median_price_change_12_mths%></td>
+    <td><%= pretty_price @suburb_stats.median_asking_rent%></td>
+    <td><%= @suburb_stats.total_listings12_mths%></td>
+    <td><%= @suburb_stats.time_on_market_days%></td>
+  </tr>
+
+
+</table>

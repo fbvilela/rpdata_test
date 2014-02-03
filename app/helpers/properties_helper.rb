@@ -5,7 +5,7 @@ module PropertiesHelper
   end
 
   def pretty_price(str)
-    number_to_currency str
+    number_to_currency str, precision: 0
   end
-  
+
 end

@@ -11,7 +11,13 @@ class PropertiesController < ApplicationController
     end
    	
    	@property_details = Rpdata.appraisal_data( @session_token, rp_data_id )
-    @property_history = Rpdata.property_history( @session_token, rp_data_id )
+    
+    @property_history = Rpdata.property_history( @session_token, rp_data_id ) #this is still using valuers
+
+    @history_details = Rpdata.property_details( @session_token, rp_data_id )
+    puts "what historory details:"
+    puts @history_details
+
     @comparable_otms = Rpdata.comparable_otms( @session_token, rp_data_id )
     
     @comparable_otms_avg_price = comparable_otms_avg_price( @comparable_otms )
@@ -20,6 +26,13 @@ class PropertiesController < ApplicationController
 
     @market_comparisons_avg_price = comparable_sales_avg_sold( @market_comparisons )
 
+    @suburb_stats = Rpdata.suburb_stats(@session_token, @property_details.suburb, @property_details.post_code, @property_details.state )
+
+    if request.path =~ /valuers/ 
+      render :show
+    else
+      render :show2
+    end
   end
 
   private
