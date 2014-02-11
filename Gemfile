@@ -6,6 +6,7 @@ gem 'rails', '4.0.2'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 
+gem 'gmaps4rails'
 gem "twitter-bootstrap-rails"
 
 # Use SCSS for stylesheets
@@ -20,7 +21,7 @@ gem 'coffee-rails', '~> 4.0.0'
 gem 'rpdata' , path: "/Users/fabio/projects/rpdata"
 
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-# gem 'therubyracer', platforms: :ruby
+ gem 'therubyracer'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'

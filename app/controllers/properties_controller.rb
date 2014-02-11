@@ -3,8 +3,9 @@ class PropertiesController < ApplicationController
 
     @session_token = Rpdata.generate_token( 'bsguser.iproperty', 'x5yGCV85', '500998' , '43376848' )
     session[:rp_data_token] = @session_token
-
-  	if !params[:address].blank?
+    session[:api_key] = '8f894f92ce07e843e5b63756a1a600018d87aa04'
+    
+  	if !params[:address].blank? 
   		rp_data_id = Rpdata.id_for_address( @session_token, params[:address] )
     else
   	 rp_data_id = '6168318'
@@ -27,6 +28,15 @@ class PropertiesController < ApplicationController
     @market_comparisons_avg_price = comparable_sales_avg_sold( @market_comparisons )
 
     @suburb_stats = Rpdata.suburb_stats(@session_token, @property_details.suburb, @property_details.post_code, @property_details.state )
+
+    lat_long = [ ['-37.875799', '144.989866'], ['-37.874274', '144.987924'] , ['-37.872512','144.994597'] , ['-37.872986','145.002043'] ]
+    @hash = Gmaps4rails.build_markers(lat_long) do |coordinate, marker|
+      marker.lat coordinate.first
+      marker.lng coordinate.last
+      window_content = render_to_string( partial: 'infowindow', layout: false )
+      marker.json({ :infowindow => window_content })
+      #marker.json({ :infowindow => render_to_string(:patial => 'infowindow', :layout => false, :formats => [:html]) })
+    end
 
     if request.path =~ /valuers/ 
       render :show

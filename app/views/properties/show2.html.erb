@@ -3,6 +3,14 @@
 <div class="row">
   <div class="col-md-2">
     <%= image_tag @property_details.photo %> 
+     <br/><br/>
+    <%= rpp_property_link(@property_details.id) %>
+    <br/>
+    <%= sales_cma_link(@property_details.id) %>
+    <br/>
+    <%= rental_cma_link(@property_details.id) %>
+    <br/>
+    <%= avm_link('7664642') %>
   </div>
   <div class="col-md-4">
     <b><%= @property_details.address %></b>
@@ -12,6 +20,7 @@
     Car spaces: <%= @property_details.car_spaces %><br/> 
     Year built: <%= @property_details.year_built %> <br/>
     Land area: <%= @property_details.land_area %> 
+   
   </div>
 
   <div class="col-md-6">
@@ -31,7 +40,11 @@
  		<td><%= sale_history[:transfer_type]%></td>
  		<td><%= pretty_price sale_history[:transfer_price]%></td>
  		<td>Not given</td>
- 		<td><%= sale_history[:vendors][:first_name] rescue "" %> <%= sale_history[:vendors][:last_name] rescue ""%></td>
+    <% if sale_history[:vendors].is_a?(Array) %>
+      <td><%= sale_history[:vendors].collect{|v| "#{v[:first_name]} #{v[:last_name]}"}.join(", ") %></td>
+    <% else %> 
+      <td><%= "#{sale_history[:vendors][:first_name]} #{sale_history[:vendors][:last_name]}" %></td>
+    <% end %> 
  		<td><%= pretty_date sale_history[:settlement_date]%></td>
  	</tr>
  <% end %> 
@@ -90,3 +103,10 @@
 </div>
 
 <%= render partial: 'suburb_stats' %>
+
+
+
+
+
+
+
