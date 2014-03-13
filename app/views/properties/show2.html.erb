@@ -3,14 +3,6 @@
 <div class="row">
   <div class="col-md-2">
     <%= image_tag @property_details.photo %> 
-     <br/><br/>
-    <%= rpp_property_link(@property_details.id) %>
-    <br/>
-    <%= sales_cma_link(@property_details.id) %>
-    <br/>
-    <%= rental_cma_link(@property_details.id) %>
-    <br/>
-    <%= avm_link('7664642') %>
   </div>
   <div class="col-md-4">
     <b><%= @property_details.address %></b>
@@ -28,6 +20,14 @@
       <input type="text" name="address" class="form-control" placeholder="Try a different address" style="width: 80%">
       <button type="submit" class="btn btn-default">Submit</button>
     <% end %> 
+    <br/>
+    <%= rpp_property_link(@property_details.id) %>
+    
+    <%= sales_cma_link(@property_details.id) %>
+    
+    <%= rental_cma_link(@property_details.id) %>
+    
+    <%= avm_link(@property_details.id) %>
   </div>
 </div>
 
@@ -81,31 +81,53 @@
 </table>
 <% end %>
 
-<div class="row">
-  <div class="col-md-6" style="text-align: center">
-    <h3>Currently On The Market</h3>&nbsp;Total: <%= @comparable_otms.count %>
-    Avg $: <%= pretty_price @comparable_otms_avg_price %>
-    Avg DOM: <%= @comparable_otms_avg_dom %>
+
+<ul class="nav nav-pills nav-justified">
+  <li class="active"><a href="#grid" data-toggle="pill">Grid View</a></li>
+  <li><a href="#map" data-toggle="pill" id="link_map">Map View</a></li>
+</ul>
+
+<div class="tab-content">
+  <div class="tab-pane active" id="grid">
+    <div class="row">
+      <div class="col-md-6" style="text-align: center">
+        <h3>Currently On The Market</h3>&nbsp;Total: <%= @comparable_otms.count %>
+        Avg $: <%= pretty_price @comparable_otms_avg_price %>
+        Avg DOM: <%= @comparable_otms_avg_dom %>
+      </div>
+      <div class="col-md-6" style="text-align: center">
+        <h3>Comparable Sales</h3>
+        Total: <%= @recent_sales.count %> 
+        Avg Price: <%= pretty_price @market_comparisons_avg_price %>  
+      </div>
+    </div>
+    
+    <div class="row" >
+      <div class="col-md-6" style="height: 430px; overflow: auto">
+        <%= render partial: "comparable_otm", collection: @comparable_otms %> 
+      </div>
+      <div class="col-md-6" style="height: 430px; overflow: auto">
+        <%= render partial: "market_comparison", collection: @recent_sales %> 
+      </div>
+    </div>
   </div>
-  <div class="col-md-6" style="text-align: center">
-    <h3>Comparable Sales</h3>
-    Total: <%= @market_comparisons.count %> 
-    Avg Price: <%= pretty_price @market_comparisons_avg_price %>  
-  </div>
-</div>
-<div class="row" >
-  <div class="col-md-6" style="height: 430px; overflow: auto">
-    <%= render partial: "comparable_otm", collection: @comparable_otms %> 
-  </div>
-  <div class="col-md-6" style="height: 430px; overflow: auto">
-    <%= render partial: "market_comparison", collection: @market_comparisons %> 
+
+  <div class="tab-pane" id="map">
+    <div style='width: 800px;'>
+      <div id="map" style='width: 800px; height: 400px;'></div>
+    </div>
   </div>
 </div>
 
 <%= render partial: 'suburb_stats' %>
 
 
-
+<script type="text/javascript">
+  $(function(){
+    setup_map(<%= raw @hash.to_json %>);
+  });
+  
+</script>
 
 
 
