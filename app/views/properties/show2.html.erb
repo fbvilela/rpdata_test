@@ -11,14 +11,21 @@
     Bath: <%= @property_details.bathrooms %> <br/>
     Car spaces: <%= @property_details.car_spaces %><br/> 
     Year built: <%= @property_details.year_built %> <br/>
-    Land area: <%= @property_details.land_area %> 
+    Land area: <%= @property_details.land_area %>m2
    
   </div>
 
   <div class="col-md-6">
-    <%= form_tag('/properties/show/valuers', method: 'get', class: 'form-inline', role: 'form') do %> 
-      <input type="text" name="address" class="form-control" placeholder="Try a different address" style="width: 80%">
-      <button type="submit" class="btn btn-default">Submit</button>
+    <%= form_tag('/properties/show', method: 'get', class: 'form-inline', role: 'form') do %> 
+      <div style="position: relative">
+        <input id="address_input" type="text" name="address" class="form-control" placeholder="Try a different address" style="width: 80%"/>
+        <ul style="padding: 10px" id="suggestion_list" class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+          
+        </ul>
+        <button type="submit" class="btn btn-default" onclick="$('#ajax_indicator').fadeIn();">Submit</button>
+      </div>
+
+      
     <% end %> 
     <br/>
     <%= rpp_property_link(@property_details.id) %>
@@ -34,17 +41,19 @@
 <h3>Sale History</h3>
 <table class="table table-striped" >
  <tr> <th>Sale Date</th> <th>Sale type</th> <th>Price</th> <th>Purchaser</th> <th>Vendor</th> <th>Settlement Date</th> </tr>
- <% @history_details.sale_history.each do |sale_history| %>
+ <% @history_details.sale_history.reject(&:blank?).each do |sale_history| %>
  	<tr>
  		<td><%= pretty_date sale_history[:transfer_date]%></td>
  		<td><%= sale_history[:transfer_type]%></td>
  		<td><%= pretty_price sale_history[:transfer_price]%></td>
  		<td>Not given</td>
-    <% if sale_history[:vendors].is_a?(Array) %>
-      <td><%= sale_history[:vendors].collect{|v| "#{v[:first_name]} #{v[:last_name]}"}.join(", ") %></td>
-    <% else %> 
-      <td><%= "#{sale_history[:vendors][:first_name]} #{sale_history[:vendors][:last_name]}" %></td>
-    <% end %> 
+    <% if sale_history.has_key?(:vendors) %>
+      <% if sale_history[:vendors].is_a?(Array) %>
+        <td><%= sale_history[:vendors].collect{|v| "#{v[:first_name]} #{v[:last_name]}"}.join(", ") %></td>
+      <% else %> 
+        <td><%= "#{sale_history[:vendors][:first_name]} #{sale_history[:vendors][:last_name]}" %></td>
+      <% end %> 
+    <% end %>
  		<td><%= pretty_date sale_history[:settlement_date]%></td>
  	</tr>
  <% end %> 
@@ -53,7 +62,7 @@
 <h3>Market History (as sale)</h3>
 <table class="table table-striped">
   <tr> <th>Listed date</th> <th>Listed type</th> <th>Listed price description</th> <th>Agency</th> <th>Agent</th> <th>Days listed</th> </tr>
-  <% @history_details.market_sale_history.each do |otm_sale_history| %>
+  <% @history_details.market_sale_history.reject(&:blank?).each do |otm_sale_history| %>
     <tr>
       <td><%= pretty_date otm_sale_history[:latest_list_date] %></td>
       <td><%= otm_sale_history[:listing_type_description] %></td>
@@ -69,7 +78,7 @@
 <h3>Market History (as rental)</h3>
 <table class="table table-striped">
 <tr> <th>Listed date</th> <th>Listed price</th> <th>Agency</th> <th>Agent</th> <th>Days listed</th> </tr>
-  <% @history_details.market_rental_history.each do |otm_rental_history| %>
+  <% @history_details.market_rental_history.reject(&:blank?).each do |otm_rental_history| %>
     <tr>
       <td><%= pretty_date otm_rental_history[:latest_list_date] %></td>
       <td><%= otm_rental_history[:rental_amount] %></td>
@@ -81,52 +90,17 @@
 </table>
 <% end %>
 
-
-<ul class="nav nav-pills nav-justified">
-  <li class="active"><a href="#grid" data-toggle="pill">Grid View</a></li>
-  <li><a href="#map" data-toggle="pill" id="link_map">Map View</a></li>
-</ul>
-
-<div class="tab-content">
-  <div class="tab-pane active" id="grid">
-    <div class="row">
-      <div class="col-md-6" style="text-align: center">
-        <h3>Currently On The Market</h3>&nbsp;Total: <%= @comparable_otms.count %>
-        Avg $: <%= pretty_price @comparable_otms_avg_price %>
-        Avg DOM: <%= @comparable_otms_avg_dom %>
-      </div>
-      <div class="col-md-6" style="text-align: center">
-        <h3>Comparable Sales</h3>
-        Total: <%= @recent_sales.count %> 
-        Avg Price: <%= pretty_price @market_comparisons_avg_price %>  
-      </div>
-    </div>
-    
-    <div class="row" >
-      <div class="col-md-6" style="height: 430px; overflow: auto">
-        <%= render partial: "comparable_otm", collection: @comparable_otms %> 
-      </div>
-      <div class="col-md-6" style="height: 430px; overflow: auto">
-        <%= render partial: "market_comparison", collection: @recent_sales %> 
-      </div>
-    </div>
-  </div>
-
-  <div class="tab-pane" id="map">
-    <div style='width: 800px;'>
-      <div id="map" style='width: 800px; height: 400px;'></div>
-    </div>
-  </div>
-</div>
-
+<h3>Suburb stats</h3>
 <%= render partial: 'suburb_stats' %>
 
+<div id="comparables" >
 
+</div>
 <script type="text/javascript">
   $(function(){
-    setup_map(<%= raw @hash.to_json %>);
+    $('#comparables').append("<h4>loading comparable sales...</h4>");
+    $.post("/properties/load_comparables",{ rp_data_id: <%= @property_details.id %> });
   });
-  
 </script>
 
 

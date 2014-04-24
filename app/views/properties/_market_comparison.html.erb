@@ -1,5 +1,11 @@
 <div class="row" style="margin-bottom: 20px">
-  <div class="col-md-4"><%= image_tag market_comparison[:property_default_photo][:large_url], width: '100%' %></div>
+  <div class="col-md-4">
+    <% if market_comparison.has_key?(:property_default_photo) && !market_comparison[:property_default_photo].blank? %>
+     	<%= image_tag market_comparison[:property_default_photo][:large_url], width: '100%' %>
+    <% else %>
+       No picture
+    <% end %>
+  </div>
   <div class="col-md-8">
   	<b><%= market_comparison[:property_address][:address] %></b> <br/>
   	<%= market_comparison[:property_attributes][:all_property_attributes] %> <br/>
