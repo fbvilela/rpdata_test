@@ -89,7 +89,7 @@ class PropertiesController < ApplicationController
     end
     output = []
     list.each do |array|
-      output << "<li class='suggestions' data-property='#{array.first}'>#{array.last}</li>"
+      output << "<li style='cursor:pointer' class='suggestions' data-property='#{array.first}'>#{array.last}</li>"
     end
     output
 
